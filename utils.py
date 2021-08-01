@@ -34,9 +34,9 @@ class LearningRateBasedStopping(tf.keras.callbacks.Callback):
             self.model.stop_training = True
             
             
-class TemporalAttention_v2(Layer):
+class AngularAttention(Layer):
     def __init__(self):
-        super(TemporalAttention_v2, self).__init__()
+        super(AngularAttention, self).__init__()
          
         self.reg = 1e-4
         self.Whe = Dense(1, activation=None, kernel_regularizer=regularizers.l2(self.reg), bias_regularizer=regularizers.l2(self.reg))
