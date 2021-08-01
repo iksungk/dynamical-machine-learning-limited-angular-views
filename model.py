@@ -11,7 +11,7 @@ from tensorflow.keras import optimizers, regularizers
 from tensorflow.keras import backend as K
 
 from blocks import SeparableConvGRU3D, encoder, decoder
-from utils import LearningRateBasedStopping, TemporalAttention_v2, apply_moving_window
+from utils import LearningRateBasedStopping, AngularAttention, apply_moving_window
 from tlfs import g_loss_npcc
 
 import scipy.io as sio
@@ -47,7 +47,7 @@ class ConvGRU3DNet(Layer):
         self.n_deconvfilter = [192, 192, 96, 48, 36, 24, 1]
         
         self.convgru3d = SeparableConvGRU3D(convgru3d_filter=self.convgru3d_filter, is_separable=self.is_separable)
-        self.temporal_attention_end = TemporalAttention_v2()
+        self.angular_attention_end = AngularAttention()
         self.encoder = encoder(self.n_convfilter, self.is_separable)
         self.decoder = decoder(self.n_deconvfilter, self.is_separable)
         
@@ -76,7 +76,7 @@ class ConvGRU3DNet(Layer):
         # tf.stack(h_states): N_view x batch_size x num_layers x num_rows//16 x num_cols//16 x n_convgru3d_filter[0]
         # -> h_gru_bf_att: batch_size x N_view x num_layers x num_rows//16 x num_cols//16 x n_convgru3d_filter[0]; batch axis: 0.
                                              
-        h_att, _ = self.temporal_attention_end(h_gru_bf_att)
+        h_att, _ = self.angular_attention_end(h_gru_bf_att)
         rec = self.decoder(h_att)
 
 
